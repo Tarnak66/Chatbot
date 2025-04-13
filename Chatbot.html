@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Чат Бот</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    #chat-container { display: flex; }
+    #instructions { margin-right: 20px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); max-width: 250px; }
+    #chatbox { width: 100%; max-width: 600px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+    .msg { margin: 10px 0; padding: 8px; border-radius: 5px; }
+    .user { background-color: #e1f5fe; color: #0077b6; }
+    .bot { background-color: #c8e6c9; color: #388e3c; }
+    input[type=text] { width: 80%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-right: 10px; }
+    button { padding: 10px 20px; background-color: #0077b6; color: white; border: none; border-radius: 5px; }
+    button:hover { background-color: #005f87; }
+    .clear-btn { background-color: #f44336; margin-top: 10px; }
+    .clear-btn:hover { background-color: #d32f2f; }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <!-- Инструкции отстрани -->
+    <div id="instructions">
+      <h3>Инструкции</h3>
+      <p><strong>За да започнеш чат:</strong> Напиши <em>здравей</em> или <em>здрасти</em>.</p>
+      <p><strong>За да приключиш чат:</strong> Напиши <em>край</em>, <em>чао</em>, <em>изход</em> или <em>довиждане</em>.</p>
+    </div>
+
+    <!-- Чат прозорец -->
+    <div id="chatbox">
+      <h2>AI Чат Бот</h2>
+      <div id="messages"></div>
+      <div>
+        <input type="text" id="userInput" placeholder="Напиши нещо..." onkeydown="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">Изпрати</button>
+        <button class="clear-btn" onclick="clearChat()">Изчисти Чат</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messagesDiv = document.getElementById("messages");
+
+    // Изчистване на чата при ново зареждане на сайта
+    window.onload = function() {
+      clearChat(); // Изчистване на чата при всяко зареждане на страницата
+    };
+
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      showMessage("Ти", text);
+      input.value = "";
+
+      // "Умен" отговор
+      setTimeout(() => {
+        const reply = generateResponse(text);
+        showMessage("AI", reply);
+      }, 500);
+    }
+
+    function showMessage(sender, text) {
+      const div = document.createElement("div");
+      div.className = "msg " + (sender === "Ти" ? "user" : "bot");
+      div.textContent = `${sender}: ${text}`;
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function generateResponse(input) {
+      input = input.toLowerCase();
+
+      // Проверка за обиди
+      const insults = ["глупав", "тъп", "идиот", "гаден"];
+      for (let insult of insults) {
+        if (input.includes(insult)) {
+          return "Съжалявам, ако съм те разочаровал. Опитвам се да бъда полезен!";
+        }
+      }
+
+      // Проверка за похвали
+      const compliments = ["добре", "страхотен", "много хубаво", "благодаря", "супер", "прекрасен"];
+      for (let compliment of compliments) {
+        if (input.includes(compliment)) {
+          return "Благодаря ти много! Радвам се, че съм полезен!";
+        }
+      }
+
+      // Отговори за сбогуване
+      if (input.includes("край") || input.includes("чао") || input.includes("изход") || input.includes("довиждане")) {
+        return "Довиждане! Беше ми приятно да поговорим!";
+      }
+
+      // Отговори за начало на чат
+      if (input.includes("здравей") || input.includes("здрасти")) {
+        return "Здравей! Как мога да ти помогна?";
+      }
+
+      // Обичайни отговори
+      if (input.includes("как си")) return "Чувствам се страхотно, благодаря за попитането!";
+      if (input.includes("какво можеш")) return "Мога да отговарям на въпроси и да помагам с информация.";
+      if (input.includes("колко е часа")) return "Не знам точния час, но можеш да провериш на компютъра си.";
+
+      return "Интересно! Може би можеш да ми разкажеш повече?";
+    }
+
+    function clearChat() {
+      // Изчистване на съобщенията от чата
+      messagesDiv.innerHTML = "";
+    }
+  </script>
+</body>
+</html>
